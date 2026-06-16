@@ -5,72 +5,105 @@ A lightweight, Windows-based **agentless network visibility monitoring system** 
 
 It provides real-time awareness of devices connected to a local network without requiring:
 - SNMP configuration
-- Agent installation on endpoints
-- Credentials or authentication
-- Enterprise network hardware
+- Agents on devices
+- Credentials or login access
+- Modifications on target machines
 
-Instead, it uses **smart active probing and state tracking** to monitor network activity in real time.
+Instead, it uses **smart active probing and state tracking** to detect network activity.
 
 ---
 
 # Project Concept
 
-This system is a simplified **Network Operations Center (NOC) dashboard** focused on:
+This system was designed as a **simplified Network Operations Center (NOC) tool** focused on:
 
-- Device visibility
-- Network status awareness
-- Event tracking (join / leave)
-- Real-time monitoring
+> “Instant network visibility without setup complexity.”
 
-It is designed for environments where simplicity and immediate setup are more important than enterprise-level depth.
+Traditional monitoring tools require:
+- SNMP setup
+- Enterprise routers
+- Endpoint agents
+- Complex configuration
+
+This project removes all of that and focuses only on:
+
+- What devices are connected?
+- Are they online or offline?
+- When did they join or leave?
+- Is the network stable?
 
 ---
 
-# How It Works (System Overview)
+# How the System Works (Architecture)
 
-## 1. Network Input
-User provides a subnet range:
+## 1. Network Discovery Phase
+When the app starts:
+
+- User inputs a network range (example: `192.168.1.0/24`)
+- System scans available IPs in the subnet
+- Uses lightweight TCP probing (no CMD or external tools)
 
 ---
 
 ## 2. Smart Scanning Engine
-- First scan: full subnet discovery
-- Next scans: incremental updates only
-- Uses lightweight TCP socket probing (no CMD tools)
+
+Instead of constantly scanning everything:
+
+### First Scan:
+- Full network scan
+
+### Next Scans:
+- Only previously detected devices
+- Gateway monitoring
+- Newly detected IPs
+
+This reduces CPU usage and improves performance.
 
 ---
 
-## 3. State Tracking System
-The system compares previous and current scans:
+## 3. Device State Tracking
 
-- New device detected
-- Device went offline
-- Device came back online
+The system stores previous scan results and compares them:
+
+| Event Type | Description |
+|------------|-------------|
+| NEW DEVICE | Device appears for first time |
+| OFFLINE | Device stops responding |
+| ONLINE | Device reconnects |
+
+This creates a **network activity timeline**.
 
 ---
 
 ## 4. Visualization Layer
+
+The system displays:
+
 - Live device table
-- Online / Offline indicators
-- Pie chart (network health)
-- Event timeline (join/leave history)
+- Online / Offline status
+- Device type classification
+- Pie chart (network health overview)
+- Timeline of network events
 
 ---
 
 ## 5. Reporting Layer
-- CSV export
-- PDF report generation
+
+The system exports:
+
+- CSV reports (raw data logs)
+- PDF reports (formatted network summary)
 
 ---
 
 # Features
 
 ## Core Features
-- Real-time LAN scanning
-- Smart incremental scanning
+- Real-time network scanning
+- Smart scan (incremental updates)
 - No SNMP required
 - No agents required
-- No device-side installation
+- Fully Windows-compatible
 
 ---
 
@@ -78,31 +111,31 @@ The system compares previous and current scans:
 - Online / Offline detection
 - Device join detection
 - Device leave detection
-- Network state history tracking
-- Gateway detection
+- Network state tracking
+- Gateway monitoring
 
 ---
 
 ## Visualization Features
 - Live pie chart (Online vs Offline)
-- Color-coded device table
+- Device status table
+- Color-coded indicators
 - Event timeline dashboard
-- Real-time refresh system
 
 ---
 
 ## Device Classification
-- Windows device detection (heuristic)
+- Windows PC detection (heuristic)
 - Linux device detection
 - Router detection
 - Mobile device detection
-- Unknown fallback type
+- Unknown device fallback
 
 ---
 
 ## Export Features
-- Export results to CSV
-- Export reports to PDF
+- Export to CSV
+- Export to PDF report
 - Timestamped logs
 
 ---
@@ -110,32 +143,21 @@ The system compares previous and current scans:
 # Technology Stack
 
 - Python 3.x
-- PySide6 (GUI + Qt Charts)
+- PySide6 (GUI + Charts)
 - ReportLab (PDF generation)
 - socket (network probing)
 - threading / QThread (background scanning)
-- ipaddress (network handling)
+- ipaddress (network parsing)
 
 ---
 
-# Installation Guide (FULL SETUP)
+# Project Structure
 
-## Step 1: Install Python
-
-### Download Python
-Download Python 3.x from:
-
-https://www.python.org/downloads/
-
-### Important during installation:
-- Check ✔ "Add Python to PATH"
-- Click Install
-
----
-
-## Step 2: Verify Python Installation
-
-Open Command Prompt:
-
-```bash id="checkpy"
-python --version
+```text
+network-visibility-monitor/
+│
+├── app.py               # Main application source code
+├── config.json          # Stores saved network range
+├── README.md            # Documentation
+├── dist/                # Compiled EXE output
+└── assets/              # Icons, screenshots (optional)
